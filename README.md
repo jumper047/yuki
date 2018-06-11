@@ -1,2 +1,3 @@
 # yuki
-Human-hass interface
+
+Human-hass interface app for appdaemon
