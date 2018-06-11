@@ -1,0 +1,78 @@
+## Yuki
+
+[brain]
+module = brain
+class = Brain
+
+# Connectors
+
+# [microphone_input]
+# module = listener
+# class = MicrophoneInput
+
+# [translate_handler]
+# module = listener
+# class = TranslateHandler
+
+# [xmpp_connection]
+# module = chat
+# class = XmppConnector
+
+[socket_connection]
+module = chat
+class = SocketConnector
+
+# Plugins
+
+[hello]
+module = hello
+class = Hello
+
+[lightcontrol]
+module = homecontrol
+class = LightControl
+
+[turnonoff]
+module = homecontrol
+class = TurnOnOff
+
+# [goingsleep]
+# module = homecontrol
+# class = GoingSleep
+
+# [sleep]
+# module = homecontrol
+# class = GoSleep
+
+[weather]
+module = weather
+class = Weather
+
+[sayweekday]
+module = dandt
+class = SayWeekday
+
+[saytime]
+module = time
+class = SayTime
+
+[timer]
+module = timer
+class = Timer
+
+
+[rest]
+module = service
+class = Rest
+
+[findphone]
+module = phone
+class = FindPhone
+
+[fuckyou]
+module = fuck
+class = FuckYourSelf
+
+[sorry]
+module = sorry
+class = Sorry
