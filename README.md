@@ -9,8 +9,11 @@ The project is on whery early stage, and installation process for now is tricky 
 ### Prerequisites
 
 [Appdaemon 1.X](http://appdaemon.readthedocs.io/en/stable/)
+
 [Snowboy](http://docs.kitt.ai/snowboy/)
+
 [Mycroft.AI's adapt library](https://mycroft.ai/documentation/adapt/)
+
 And some other libs which you can find in source code and install via pip. Sorry for thar.
 
 ### Installation
