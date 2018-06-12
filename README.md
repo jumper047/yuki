@@ -18,4 +18,4 @@ And some other libs which you can find in source code and install via pip. Sorry
 
 ### Installation
 
-Yuki is written as an app for AppDaemon. For installation, it is enough to clone the repository in the AppDaemon application folder, and add the contents of appdaemon.cfg to the end of the configuration file
+Yuki has written as an app for AppDaemon. For installation, it is enough to clone the repository in the AppDaemon application folder, and add the contents of appdaemon.cfg to the end of the configuration file
