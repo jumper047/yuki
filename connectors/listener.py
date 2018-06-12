@@ -49,8 +49,7 @@ class MicrophoneInput(appapi.AppDaemon):
 
     def pocketsphinx_init(self):
         """Initialize pocketsphinx stt engine"""
-        self.log("Pocketsphinx init")
-        language_directory = "/home/hass/sphinx_data/model"
+        language_directory = self.args["pocketsphinx_dir"]
         acoustic_parameters_directory = os.path.join(
             language_directory, "acoustic-model")
         language_model_file = os.path.join(
@@ -68,8 +67,8 @@ class MicrophoneInput(appapi.AppDaemon):
     def snowboy_yuki_init(self):
         """Initialize snowboy hotword detection engine"""
         self.log("Snowboy hotword detector init")
-        decoder_model = "/home/hass/snowboy_models/yuki.pmdl"
-        resource_file = "/home/hass/common.res"
+        decoder_model = self.args["snowboy_yuki_mdl"]
+        resource_file = self.args["snowboy_res"]
         audio_gain = 1
         sensitivity = "0.4"
         self.snowboy_yuki_decoder = sd.SnowboyDetect(
@@ -88,8 +87,8 @@ class MicrophoneInput(appapi.AppDaemon):
     def snowboy_prefix_init(self):
         """Initialize snowboy hotword detection engine"""
         self.log("Snowboy hotword detector init")
-        decoder_model = "/home/hass/snowboy_models/hey.pmdl"
-        resource_file = "/home/hass/common.res"
+        decoder_model = self.args["snowboy_hey_mdl"]
+        resource_file = self.args["snowboy_res"]
         audio_gain = 1
         sensitivity = "0.45"
         self.snowboy_prefix_decoder = sd.SnowboyDetect(
@@ -104,7 +103,6 @@ class MicrophoneInput(appapi.AppDaemon):
     def set_snowboy_prefix_sensitivity(self, entity, attribute, old, new, strange, **kwargs):
         self.snowboy_prefix_decoder.SetSensitivity(str(new).encode())
         new_sens = self.snowboy_prefix_decoder.GetSensitivity()
-        print("Prefix hotword sens changed to {}".format(str(new_sens)))
 
     def toggle_listener(self, entity, attribute, old, new, strange, **kwargs):
         self.recognize_keyword = new
@@ -113,24 +111,18 @@ class MicrophoneInput(appapi.AppDaemon):
         self.recognizer = new
 
     def answer(self, message):
-        # self.call_service("media_player/volume_set",
-                          # entity_id="speakerphone", volume_level=0.99)
-        self.call_service("tts/yandextts_say",
+        self.call_service(self.args["tts"],
                           message=message)
 
     def listener(self):
         """Speech listening and recognition loop"""
         self.log('Listener started')
-        print("Listener started")
         # Record hotword
         while self.listening:
             try:
                 with self.mic as source:
-                    print("Waiting name")
                     audio = self.rec.listen(source)
-                    print("Something recorded")
             except OSError:
-                print("Exception caught")
                 self.listening = False
 
             # Check, if engine is active or not
@@ -140,23 +132,15 @@ class MicrophoneInput(appapi.AppDaemon):
             data = audio.get_raw_data(convert_rate=16000, convert_width=2)
             seconds = len(data) / 32000
 
-            print("recorded seconds:", seconds)
-            print("energy threshold:", self.rec.energy_threshold)
-
             # Hotword detection
             self.snowboy_yuki_decoder.Reset()
             yuki = self.snowboy_yuki_decoder.RunDetection(data)
             if yuki > 0:
-                print("Yuki recognized")
                 self.snowboy_prefix_decoder.Reset()
                 hey = self.snowboy_prefix_decoder.RunDetection(data)
-                if hey > 0:
-                    print("Hey recognized")
-                else:
-                    print("No hey - go away. Going next lap")
+                if hey <= 0:
                     continue
             else:
-                print("No yuki - go away. Next lap")
                 continue
 
             # Trying to switch recognizer
@@ -164,23 +148,15 @@ class MicrophoneInput(appapi.AppDaemon):
 
             # Record command
             with self.mic as source:
-                print("Waiting for command")
                 self.turn_on("script.low_beep")
-                self.turn_on("switch.laptop_mute")
                 try:
                     audio = self.rec.listen(source, 3)
                 except sr.WaitTimeoutError:
-                    print("Timeout")
                     self.turn_on("script.listening")
-                    self.turn_off("switch.laptop_mute")
                     continue
-                print("Something recorded")
-                self.turn_off("switch.laptop_mute")
 
             data = audio.get_raw_data(convert_rate=16000, convert_width=2)
             seconds = len(data) / 32000
-            print("recorded seconds:", seconds)
-            print("energy threshold:", self.rec.energy_threshold)
 
             if self.recognizer == "external":
                 # Send data to recognizer
