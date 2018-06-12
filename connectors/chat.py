@@ -11,7 +11,7 @@ from sleekxmpp.exceptions import IqError, IqTimeout
 class XmppConnector(appapi.AppDaemon, ClientXMPP):
 
     def initialize(self):
-        ClientXMPP.__init__(self, "yuki@jumper047.tk", "password")
+        ClientXMPP.__init__(self, self.args["jid"], self.args["pass"])
 
         self.register_plugin('xep_0004')
         self.register_plugin('xep_0030')
@@ -28,12 +28,8 @@ class XmppConnector(appapi.AppDaemon, ClientXMPP):
         self.yuki_connect()
 
     def yuki_connect(self):
-        print("Connecting...")
         if self.connect():
             self.process(block=False)
-            print("Done")
-        else:
-            print("Unable to connect")
 
     def yuki_disconnect(self):
         pass
@@ -46,14 +42,12 @@ class XmppConnector(appapi.AppDaemon, ClientXMPP):
         self['xep_0172'].publish_nick('Юки')
 
         vcard = self['xep_0054'].stanza.VCardTemp()
-        vcard['NICKNAME'] = 'Юки'
+        vcard['NICKNAME'] = 'Yuki'
         vcard['JABBERID'] = self.boundjid.bare
-        vcard['ORG']['ORGNAME'] = 'Jumper Inc'
-        vcard['DESC'] = "Я - человекоподобный интерфейс умного дома. Ня ^_^!"
 
         avatar_data = None
         try:
-            with open('/home/hass/sleekxmpp_data/avatar.png', 'rb') as avatar_file:
+            with open(self.args["avatar"], 'rb') as avatar_file:
                 avatar_data = avatar_file.read()
         except IOError:
             self.log('Could not load avatar')
@@ -71,7 +65,7 @@ class XmppConnector(appapi.AppDaemon, ClientXMPP):
             self['xep_0153'].set_avatar(avatar=avatar_data, mtype='image/png')
 
         self['xep_0054'].publish_vcard(vcard)
-        self.send_message(mto="me@jumper047.tk",
+        self.send_message(mto=self.args["jid_2"],
                           mbody="Текстовый интерфейс запущен.", mtype="chat")
 
 def message(self, message):
@@ -79,7 +73,7 @@ def message(self, message):
     self.get_app("brain").query(message.get('body'), "xmpp_connection")
 
 def answer(self, message):
-    self.send_message(mto="me@jumper047.tk", mbody=message, mtype="chat")
+    self.send_message(mto=self.args["jid_2"], mbody=message, mtype="chat")
 
 
 class SocketConnector(appapi.AppDaemon):
@@ -88,7 +82,7 @@ class SocketConnector(appapi.AppDaemon):
         self.socket_handler = threading.Thread(target=self.socket_server)
         self.socket_handler.daemon = True
         self.socket_handler.start()
-        print("Socket connector initialized")
+        self.log("Socket connector initialized")
 
     def answer(self, message):
         self.conn.send(message.encode())
@@ -100,7 +94,7 @@ class SocketConnector(appapi.AppDaemon):
 
         self.conn, addr = sock.accept()
 
-        print('Socket client connected', addr)
+        self.log('Socket client connected', addr)
 
         while True:
             data = self.conn.recv(1024)
