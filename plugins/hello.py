@@ -25,5 +25,3 @@ class Hello(AppDaemon):
             speech = "До скорого!"
         return speech
 
-    def check(self, query, tquery):
-        return bool("погода" in tquery)

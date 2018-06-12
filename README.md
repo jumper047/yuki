@@ -14,7 +14,7 @@ The project is on whery early stage, and installation process for now is tricky 
 
 [Mycroft.AI's adapt library](https://mycroft.ai/documentation/adapt/)
 
-And some other libs which you can find in source code and install via pip. Sorry for thar.
+And some other libs which you can find in source code and install via pip. Sorry for that.
 
 ### Installation
 

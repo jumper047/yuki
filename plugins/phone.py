@@ -30,5 +30,5 @@ class FindPhone(AppDaemon):
         print("findphone init done")
 
     def handle(self, intent_dict):
-        requests.get('https://autoremotejoaomgcd.appspot.com/sendmessage?key=APA91bFXqdAorFgm1pxPddXuEbyQXgrwP5lGru1JjoJHEO5OL6u0ctDPJiKtAymtAdVR60xuPJpFE2hO6QARa1uuSJoOTdOL16PIBBTXNreWU1nlAoN_4H6MMHgFocHtWvfsmDqmTm7x&message=find_phone&password=labirintofjumper047')
+        requests.get('https://autoremotejoaomgcd.appspot.com/sendmessage?key=APA91bFXqdAorFgm1pxPddXuEbyQXgrwP5lGru1JjoJHEO5OL6u0ctDPx&message=find_phone&password=passworrerd')
         return choice(self.answers)

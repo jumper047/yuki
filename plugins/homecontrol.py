@@ -27,8 +27,6 @@ class LightControl(AppDaemon):
 
         self.ok_phrases = ["Ок", "Сделано", "Готово"]
 
-        print("homecontrol initialized")
-
     def handle(self, intent_dict):
         action = intent_dict.get("LightControlKeyword")
         scene = intent_dict.get("LightControlScene")
@@ -51,7 +49,7 @@ class LightControl(AppDaemon):
         elif action == "включить" and scene == "лампа":
             self.turn_on("light.table_lamp")
         else:
-            return "Блин, что то пошло не так реально пошло не так"
+            return "Что то пошло не так"
 
         # if randint(0, 9) > 1:
         #     return ""
@@ -93,30 +91,6 @@ class WhoIsAtHome(AppDaemon):
 
     def handle(self, intent_dict):
         return None
-
-
-class GoingSleep(AppDaemon):
-
-    def initialize(self):
-
-        engine = self.get_app("brain").engine
-        keyword = ["спать"]
-        add_keyword = ["пойти", "идти"]
-        for k in keyword:
-            engine.register_entity(k, "GoingSleepKeyword")
-        for a in add_keyword:
-            engine.register_entity(a, "GoingSleepAddKeyword")
-        goingsleep_intent = IntentBuilder("goingsleep")\
-            .require("GoingSleepKeyword")\
-            .optionally("GoingSleepAddKeyword")\
-            .build()
-        engine.register_intent_parser(goingsleep_intent)
-        print("sleep initialized")
-
-    def handle(self, intent_dict):
-        requests.get('https://autoremotejoaomgcd.appspot.com/sendmessage?key=APA91bFXqdAorFgm1pxPddXuEbyQXgrwP5lGru1JjoJHEO5OL6u0ctDPJiKtAymtAdVR60xuPJpFE2hO6QARa1uuSJoOTdOL16PIBBTXNreWU1nlAoN_4H6MMHgFocHtWvfsmDqmTm7x&message=sleep&password=labirintofjumper047')
-        return ""
-
 
 class TurnOnOff(AppDaemon):
 
