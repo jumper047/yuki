@@ -16,6 +16,7 @@ class Weather(AppDaemon):
         self.context_sensitive = True
         # Create intent
         engine = self.get_app("brain").engine
+        self.read_strings = self.get_app("brain").read_dialog_files
         keyword = ["погода", "дождь", "снег"]
         day = ["сегодня", "завтра", "послезавтра", "понедельник", "вторник",
                "среда", "четверг", "пятница", "суббота", "воскресенье"]
@@ -39,23 +40,12 @@ class Weather(AppDaemon):
         self.morph = pymorphy2.MorphAnalyzer()
 
         # Phrases
-        self.weather_phrases = ["{in_prefix}{day} в {city} будет {status}, от {temp_min} до {temp_max} градусов.",
-                                "Погода на {day}: в {city} {status}, температура от {temp_min} до {temp_max} градусов.",
-                                "Погода в {city}: {in_prefix}{day} будет {status}, температура - от {temp_min} до {temp_max} градусов."]
-        self.weather_now_phrases = ["Сейчас за окном {status}, температура - {temp_now} {degree}.",
-                                    "Сейчас на улице {temp_now} {degree}, {status}."]
-        self.rain_phrases = ["Да, будет дождь.",
-                             "Похоже, что дождь будет.",
-                             "Кажется да, дождь будет."]
-        self.no_rain_phrases = ["Нет, дождя не будет.",
-                                "Похоже, что дождя не будет.",
-                                "Нет, дождя не должно быть"]
-        self.snow_phrase = ["Да, снег будет",
-                            "Похоже, что будет снег",
-                            "Кажется да, снег будет"]
-        self.no_snow_phrase = ["Нет, снега не будет",
-                               "Похоже, что снега не будет",
-                               "Нет, думаю что снега не будет"]
+        self.weather_phrases = self.read_strings("weather.dialog")
+        self.weather_now_phrases = self.read_strings("now.dialog")
+        self.rain_phrases = self.read_strings("rain.dialog")
+        self.no_rain_phrases = self.read_strings("no_rain.dialog")
+        self.snow_phrase = self.read_strings("snow.dialog")
+        self.no_snow_phrase = self.read_strings("no_snow.dialog")
 
         self.log("Weather plugin initialized")
 
@@ -103,7 +93,7 @@ class Weather(AppDaemon):
             if forecast.will_be_rainy_at(dt):
                 speech = random.choice(self.rain_phrases)
             else:
-                speech = random.chice(self.no_rain_phrases)
+                speech = random.choice(self.no_rain_phrases)
         elif request == "снег":
             if forecast.will_be_snowy_at(dt):
                 speech = random.choice(self.snow_phrase)

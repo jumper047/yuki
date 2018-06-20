@@ -1,0 +1,3 @@
+{in_prefix}{day} в {city} будет {status}, от {temp_min} до {temp_max} градусов.
+Погода на {day}: в {city} {status}, температура от {temp_min} до {temp_max} градусов.
+Погода в {city}: {in_prefix}{day} будет {status}, температура - от {temp_min} до {temp_max} градусов.

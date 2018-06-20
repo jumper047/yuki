@@ -1,0 +1,2 @@
+Сейчас за окном {status}, температура - {temp_now} {degree}.
+Сейчас на улице {temp_now} {degree}, {status}.
