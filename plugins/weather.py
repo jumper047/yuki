@@ -57,7 +57,7 @@ class Weather(AppDaemon):
                                "Похоже, что снега не будет",
                                "Нет, думаю что снега не будет"]
 
-        print("weather initialized")
+        self.log("Weather plugin initialized")
 
     def handle(self, intent_dict):
         day = intent_dict.get("WeatherDay", "сегодня")
@@ -74,9 +74,7 @@ class Weather(AppDaemon):
             sp_city = city
         else:
             sp_city = self.morph.parse(city)[0].inflect({'loct'})[0]
-        print(sp_city)
         sp_city = sp_city.capitalize()
-        print(sp_city)
         request = intent_dict.get("WeatherKeyword")
 
         forecast = self.owm.daily_forecast(city, limit=7)
@@ -97,7 +95,6 @@ class Weather(AppDaemon):
         if request == "погода":
             speech = random.choice(self.weather_phrases).format(
                 day=sp_day, city=sp_city, status=status, temp_min=temp_min, temp_max=temp_max, in_prefix=in_prefix)
-            print(speech[0])
             speech = speech[0].capitalize() + speech[1:]
             if day == "сегодня":
                 speech = speech + " " + random.choice(self.weather_now_phrases).format(
