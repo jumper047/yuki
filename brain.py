@@ -143,6 +143,16 @@ class Brain(AppDaemon):
                 break
         return " ".join(words)
 
+    def read_dialog_files(self, dialog_file):
+        """
+        Reads file with phrases and returns list of them
+        """
+        dialog = []
+        with open(dialog_file, 'r') as d:
+            for line in d:
+                dialog.append(line[:-1])
+        return dialog
+
     def my_name(self):
         names = ["Jumper"]
         return random.choice(names)
