@@ -53,13 +53,8 @@ class Brain(AppDaemon):
     def normalize(self, text):
         """Remove punctuation, set all words to normal form"""
         nwords = []
-        ctext = ""
-        punctuation = [",", ".", "!", "?"]
-        text = text.lower()
-        for s in text:
-            if s not in punctuation:
-                ctext += s
-        for word in ctext.split(' '):
+        text = re.sub('\?|\!|\.|\,', '', text).lower()
+        for word in text.split(' '):
             nword = self.morph.parse(word)[0].normal_form
             nwords.append(nword)
         nwords = " ".join(nwords)
@@ -75,7 +70,6 @@ class Brain(AppDaemon):
             for line in d:
                 dialog.append(line[:-1])
         return dialog
-
 
     def my_name(self):
         names = ["Jumper"]
